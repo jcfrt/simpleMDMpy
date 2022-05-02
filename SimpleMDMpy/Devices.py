@@ -127,3 +127,9 @@ class Devices(SimpleMDMpy.SimpleMDM.Connection):
         url = self.url + "/" + str(device_id) + "/custom_attribute_values/" + custom_attribute_name
         data = {'value': value}
         return self._put_data(url, data)
+
+    def list_users(self, device_id):
+        """Return a listing of the user accounts on a device."""
+        url = self.url + "/" + str(device_id) + "/users"
+        data = {}
+        return self._get_data(url, data)
