@@ -8,6 +8,7 @@
 - Replaced get_logs() `id_override` input parameter with `starting_after` and `limit` (#25)
 - Fixes calls that return a single item (#26)
 - Add method to download profiles (#40)
+- Adds option for get_devices for include_awaiting_enrollment (#43)
 
 ### Issues
 
