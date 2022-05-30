@@ -17,7 +17,9 @@ class Devices(SimpleMDMpy.SimpleMDM.Connection):
         url = self.url
         data = {}
         if search:
-            data = {'search': search}
+            data['search'] = search
+        if include_awaiting_enrollment:
+            data['include_awaiting_enrollment'] = True
         elif device_id != 'all':
             url = url + "/" + str(device_id)
         if include_awaiting_enrollment:
@@ -46,12 +48,21 @@ class Devices(SimpleMDMpy.SimpleMDM.Connection):
     def delete_device(self, device_id):
         """Unenroll a device and remove it from the account."""
         url = self.url + "/" + str(device_id)
-        data = {}
-        return self._delete_data(url, data) #pylint: disable=too-many-function-args
+        return self._delete_data(url) #pylint: disable=too-many-function-args
+
+    def list_profiles(self, device_id):
+        """Returns a listing of profiles that are directly assigned to the device."""
+        url = self.url + "/" + str(device_id) + "/profiles"
+        return self._get_data(url)
 
     def list_installed_apps(self, device_id):
         """Returns a listing of the apps installed on a device."""
         url = self.url + "/" + str(device_id) + "/installed_apps"
+        return self._get_data(url)
+
+    def list_users(self, device_id):
+        """Returns a listing of the user accounts on a device."""
+        url = self.url + "/" + str(device_id) + "/users"
         return self._get_data(url)
 
     def push_apps_device(self, device_id):
@@ -109,6 +120,17 @@ class Devices(SimpleMDMpy.SimpleMDM.Connection):
         url = self.url + "/" + str(device_id) + "/update_os"
         data = {}
         return self._post_data(url, data)
+
+    def enable_remote_desktop(self, device_id):
+        """You can use this method to enable remote desktop. Supported by macOS 10.14.4+ devices only."""
+        url = self.url + "/" + str(device_id) + "/remote_desktop"
+        data = {}
+        return self._post_data(url, data)
+
+    def disable_remote_desktop(self, device_id):
+        """You can use this method to disable remote desktop. Supported by macOS 10.14.4+ devices only."""
+        url = self.url + "/" + str(device_id) + "/remote_desktop"
+        return self._delete_data(url)
 
     def refresh_device(self, device_id):
         """Request a refresh of the device information and app inventory.

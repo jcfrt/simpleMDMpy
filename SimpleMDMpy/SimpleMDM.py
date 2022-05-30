@@ -7,6 +7,10 @@ from builtins import str
 from builtins import range
 from builtins import object
 import requests
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
+import time
+
 
 class ApiError(Exception):
     """Catch for API Error"""
@@ -16,21 +20,50 @@ class Connection(object): #pylint: disable=old-style-class,too-few-public-method
     """create connection with api key"""
     proxyDict = dict()
 
+    last_device_req_timestamp = 0
+    device_req_rate_limit = 1.0
+
     def __init__(self, api_key):
         self.api_key = api_key
+        retry_strategy = Retry(
+            total = 5,
+            backoff_factor = 1,
+            status_forcelist = [500, 502, 503, 504],
+        )
+        adapter = HTTPAdapter(max_retries=retry_strategy)
+        self.session = requests.Session()
+        self.session.mount("https://", adapter)
+        self.session.mount("http://", adapter)
 
     def _url(self, path): #pylint: disable=no-self-use
         """base api url"""
         return 'https://a.simplemdm.com/api/v1' + path
 
-    def _get_data(self, base_url, params=None):
+    def _is_devices_req(self, url):
+        return url.startswith(self._url("/devices"))
+
+    def _get_data(self, url, params=None):
         """GET call to SimpleMDM API"""
         start_id = 0
         has_more = True
         list_data = []
+        if params is None:
+            params = {}
+        params["limit"] = 100
         while has_more:
-            url = base_url + "?limit=100&starting_after=" + str(start_id)
-            resp = requests.get(url, params, auth=(self.api_key, ""), proxies=self.proxyDict)
+            params["starting_after"] = start_id
+            # Calls to /devices should be rate limited
+            if self._is_devices_req(url):
+                if time.time() - self.last_device_req_timestamp < self.device_req_rate_limit:
+                    time.sleep(time.time() - self.last_device_req_timestamp)
+            self.last_device_req_timestamp = time.time()
+            while True:
+                resp = self.session.get(url, params=params, auth=(self.api_key, ""), proxies=self.proxyDict)
+                # A 429 means we've hit the rate limit, so back off and retry
+                if resp.status_code == 429:
+                    time.sleep(1)
+                else:
+                    break
             if not 200 <= resp.status_code <= 207:
                 raise ApiError(f"API returned status code {resp.status_code}")
             resp_json = resp.json()
