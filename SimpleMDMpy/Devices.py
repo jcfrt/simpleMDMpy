@@ -11,11 +11,17 @@ class Devices(SimpleMDMpy.SimpleMDM.Connection):
         SimpleMDMpy.SimpleMDM.Connection.__init__(self, api_key)
         self.url = self._url("/devices")
 
-    def get_device(self, device_id="all", search=None, include_awaiting_enrollment=False):
+    def get_device(
+        self,
+        device_id="all",
+        search=None,
+        include_awaiting_enrollment=False,
+        include_secret_custom_attributes=False
+    ):
         """
         Returns a device specified by id. If no ID or search is specified all
         devices will be returned.
-        
+
         Args:
             device_id (str, optional):  Returns a dictionary of the specified
                 device id. By default, it returns a list of all devices. If a
@@ -24,13 +30,18 @@ class Devices(SimpleMDMpy.SimpleMDM.Connection):
                 search criteria. Defaults to None. Ignored if device_id is set.
             include_awaiting_enrollment (bool, optional): Returns a list of all
                 devices including devices in the "awaiting_enrollment" state.
-        
+            include_secret_custom_attributes (bool, optional): Returns all
+                custom attribute values including those marked as secret.
+
         Returns:
             dict: A single dictionary object with device information.
             array: An array of dictionary objects with device information.
         """
         url = self.url
-        params = {'include_awaiting_enrollment': include_awaiting_enrollment}
+        params = {
+            'include_awaiting_enrollment': include_awaiting_enrollment,
+            'include_secret_custom_attributes': include_secret_custom_attributes
+        }
         # if a device ID is specified, then ignore any searches
         if device_id != 'all':
             url = url + "/" + str(device_id)
