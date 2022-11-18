@@ -1,3 +1,15 @@
 [build-system]
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "simpleMDMpy"
+description = "python lib for simpleMDM API"
+version = "3.0.7"
+authors = [
+    { name = "SteveKueng", email = "steve.kueng@srgssr.ch" }
+]
+dependencies = [
+    "requests"
+]
+
