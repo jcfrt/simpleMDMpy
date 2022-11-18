@@ -48,3 +48,9 @@ class Apps(SimpleMDMpy.SimpleMDM.Connection):
         url = self.url + "/" + app_id
         data = {}
         return self._delete_data(url, data) #pylint: disable=too-many-function-args
+
+    def list_installs(self, app_id):
+        """Returns a listing of the devices that an app is installed on."""
+        url = self.url + "/" + app_id + "/installs"
+        data = {}
+        return self._get_data(url, data)
