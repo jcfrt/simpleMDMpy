@@ -52,5 +52,4 @@ class Apps(SimpleMDMpy.SimpleMDM.Connection):
     def list_installs(self, app_id):
         """Returns a listing of the devices that an app is installed on."""
         url = self.url + "/" + app_id + "/installs"
-        data = {}
-        return self._get_data(url, data)
+        return self._get_data(url)
