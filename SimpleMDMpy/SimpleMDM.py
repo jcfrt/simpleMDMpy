@@ -51,7 +51,7 @@ class Connection(object): #pylint: disable=old-style-class,too-few-public-method
     def _is_devices_req(self, url):
         return url.startswith(self._url("/devices"))
 
-    def _get_data(self, url, params={}):
+    def _get_data(self, url, params=None):
         """GET call to SimpleMDM API"""
         has_more = True
         list_data = []
@@ -59,6 +59,8 @@ class Connection(object): #pylint: disable=old-style-class,too-few-public-method
         # the parameters aren't included with the input params. This is needed
         # so that certain other functions, like Logs.get_logs(), can send custom
         # starting_after and limit parameters.
+        if params is None:
+            params = {}
         req_params = {}
         req_params['limit'] = params.get('limit', 100)
         req_params['starting_after'] = params.get('starting_after', 0)
