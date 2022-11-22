@@ -61,9 +61,8 @@ class Connection(object): #pylint: disable=old-style-class,too-few-public-method
         # starting_after and limit parameters.
         if params is None:
             params = {}
-        req_params = {}
-        req_params['limit'] = params.get('limit', 100)
-        req_params['starting_after'] = params.get('starting_after', 0)
+        params['limit'] = params.get('limit', 100)
+        params['starting_after'] = params.get('starting_after', 0)
         while has_more:
             # Calls to /devices should be rate limited
             if self._is_devices_req(url):
