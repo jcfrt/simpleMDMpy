@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [3.0.7]
+
 ### Added
 - setup.cfg - Python package setup file ([#29](https://github.com/macadmins/simpleMDMpy/issues/29)) - TY [@bryanheinz](https://github.com/bryanheinz)
 - pyproject.toml - Python package meta setup file ([#29](https://github.com/macadmins/simpleMDMpy/issues/29)) - TY [@bryanheinz](https://github.com/bryanheinz)
@@ -20,6 +22,9 @@
 - Add retry on 5xx errors to GET requests to `_get_data` - TY [@MagerValp](https://github.com/MagerValp)
 - Fixes `_get_data` so that it properly preserves all input parameters ([#45](https://github.com/macadmins/simpleMDMpy/issues/45)) - TY [@bryanheinz](https://github.com/bryanheinz)
 - Adds help docs to Devices.get_device() - TY [@bryanheinz](https://github.com/bryanheinz)
+- Add Scripts and ScriptJobs - TY [@MagerValp](https://github.com/MagerValp)
+- Fix pagination - TY [@jcfrt](https://github.com/jcfrt)
+- Fix rate limiting - TY [@MagerValp](https://github.com/MagerValp)
 
 ### Issues
 
@@ -31,6 +36,7 @@
 - Closes issue #43
 - Closes issue #29
 - Closes issue #45
+- Closes issue #57
 
 ## [v3.0.6]
 

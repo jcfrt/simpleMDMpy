@@ -14,6 +14,11 @@ Your SimpleMDM API key will need to be set as an environmental variable `api_key
 
 Help available via `help(SimpleMDMpy)`
 
+## Sample Projects
+
+* [Making SimpleMDM Complicated](https://github.com/lucasjhall/CONF-2021_MDO_YVR-Making_SimpleMDM_Complicated)
+* [SimpleCLI](https://github.com/MagerValp/SimpleCLI)
+
 ## Available Modules
 
 ### Account
@@ -262,7 +267,7 @@ class Devices(SimpleMDMpy.SimpleMDM.Connection)
  |
  |  get_device(self, device_id='all', search=None, include_awaiting_enrollment=False, include_secret_custom_attributes=False)
  |      Returns a device specified by id. If no ID or search is
- |      specified all devices will be returned. Default does not include devices
+ |      specified all devices will be returned. Default does not include d evices
  |      waiting for enrollment and does not include all custom attributes
  |
  |  list_installed_apps(self, device_id)

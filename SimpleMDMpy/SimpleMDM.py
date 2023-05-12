@@ -60,17 +60,19 @@ class Connection(object): #pylint: disable=old-style-class,too-few-public-method
         # so that certain other functions, like Logs.get_logs(), can send custom
         # starting_after and limit parameters.
         if params is None:
-            params = {}
-        params['limit'] = params.get('limit', 100)
-        params['starting_after'] = params.get('starting_after', 0)
+            req_params = {}
+        else:
+            req_params = params.copy()
+        req_params['limit'] = req_params.get('limit', 100)
         while has_more:
             # Calls to /devices should be rate limited
             if self._is_devices_req(url):
-                if time.time() - self.last_device_req_timestamp < self.device_req_rate_limit:
-                    time.sleep(time.time() - self.last_device_req_timestamp)
-            self.last_device_req_timestamp = time.time()
+                seconds_since_last_device_req = time.monotonic() - self.last_device_req_timestamp
+                if seconds_since_last_device_req < self.device_req_rate_limit:
+                    time.sleep(self.device_req_rate_limit - seconds_since_last_device_req)
+            self.last_device_req_timestamp = time.monotonic()
             while True:
-                resp = self.session.get(url, params=params, auth=(self.api_key, ""), proxies=self.proxyDict)
+                resp = self.session.get(url, params=req_params, auth=(self.api_key, ""), proxies=self.proxyDict)
                 # A 429 means we've hit the rate limit, so back off and retry
                 if resp.status_code == 429:
                     time.sleep(1)
@@ -87,7 +89,7 @@ class Connection(object): #pylint: disable=old-style-class,too-few-public-method
             list_data.extend(data)
             has_more = resp_json.get('has_more', False)
             if has_more:
-                params["starting_after"] = data[-1].get('id')
+                req_params["starting_after"] = data[-1].get('id')
         return list_data
 
     def _get_xml(self, url, params=None):
